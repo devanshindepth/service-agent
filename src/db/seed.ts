@@ -67,10 +67,43 @@ async function main() {
     purchaseDate: new Date("2024-01-15"),
   }).returning({ id: purchases.id });
 
+  // 4. Create test tickets with known tracking codes
+  console.log("🎫 Creating test tickets...");
+  const testTickets = await db.insert(tickets).values([
+    {
+      userId: user.id,
+      purchaseId: purchase.id,
+      issueType: "warranty_claim",
+      description: "Screen flickering issue after 6 months of use",
+      status: "pending",
+      trackingCode: "123e4567-e89b-12d3-a456-426614174000",
+    },
+    {
+      userId: user.id,
+      purchaseId: purchase.id,
+      issueType: "warranty_claim", 
+      description: "Battery not holding charge properly",
+      status: "validated",
+      trackingCode: "987fcdeb-51a2-43d1-9f12-123456789abc",
+    },
+    {
+      userId: user.id,
+      purchaseId: purchase.id,
+      issueType: "warranty_claim",
+      description: "Keyboard keys sticking",
+      status: "approved",
+      trackingCode: "456e7890-a12b-34c5-d678-901234567def",
+    }
+  ]).returning({ id: tickets.id, trackingCode: tickets.trackingCode });
+
   console.log("✅ Realistic data seeding completed!");
   console.log(`   User: John Smith (ID: ${user.id})`);
   console.log(`   Product: MacBook Pro 14-inch (ID: ${laptop.id})`);
   console.log(`   Purchase: INV-2024-00125 (ID: ${purchase.id})`);
+  console.log("   Test Tickets:");
+  testTickets.forEach((ticket, index) => {
+    console.log(`     ${index + 1}. ${ticket.trackingCode}`);
+  });
 
   await client.end();
 }
