@@ -1,4 +1,4 @@
-import { WarrantyChat } from "@/components/bot-chat";
+import WarrantyChat from "@/components/bot-chat";
 
 export default function Home() {
   return (
